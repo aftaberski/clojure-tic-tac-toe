@@ -11,6 +11,8 @@
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (do (println "Hello, World!")
+  (do (println "*******************************************************")
+      (println "              LET'S PLAY TIC TAC TOE!")
+      (println "*******************************************************") 
       (let [input (read-line)]
         (prn (str "this was the input: " input)))))
