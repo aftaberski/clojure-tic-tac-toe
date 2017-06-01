@@ -36,6 +36,7 @@
     [left-to-right right-to-left]))
 
 (defn get-winner
+  "Takes a coll of vectors. Returns the winner or nil"
   [v]
   (let [winner (->> v
                     (map set)
@@ -52,8 +53,6 @@
         diagonals (diagonals board)
         winner    (get-winner (concat rows columns diagonals))]
     (prn (concat rows columns diagonals))
-    ;; TODO: check if set of all x or o but not blank
-    ;; Get winner!!! 
     winner))
 
 (defn filled-space?
@@ -84,17 +83,26 @@
   [board player]
   (print-board board)
   (let [next-move       (prompt ["Player " player ": Pick your next move!"])
-        ;; TODO: validate input - only 1 thru 9, no one else there
-        ;; If not valid, take turn again
-        conformed-input (read-string next-move)]
-    (assoc board conformed-input player)))
+        options         (map str (range 0 9))]
+
+    (if (some #(= % next-move) options)
+
+      (let [conformed-input (read-string next-move)]
+        (if (= blank-space (get board conformed-input))
+
+          (assoc board conformed-input player)
+
+          (do (println "That space is already taken! Pick again")
+              (take-turn board player))))
+
+      (do (println "You must select a number between 0 - 8")
+          (take-turn board player)))))
 
 (defn play
   [board players]
   ;; while no winner && board not full
   (print-board board)
-  (let [{:keys [winner full?]} (game-status board)
-        _ (prn "winner in play" winner)]
+  (let [{:keys [winner full?]} (game-status board)]
 
     (cond winner
           (println (str winner " won the game!"))
