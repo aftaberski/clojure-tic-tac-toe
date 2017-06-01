@@ -70,7 +70,8 @@
   [board player]
   (print-board board)
   (let [next-move       (prompt ["Player " player ": Pick your next move!"])
-        ;; TODO: validate input - only 1 thru 9
+        ;; TODO: validate input - only 1 thru 9, no one else there
+        ;; If not valid, take turn again
         conformed-input (read-string next-move)]
     (assoc board conformed-input player)))
 
