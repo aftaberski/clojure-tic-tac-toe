@@ -38,9 +38,12 @@
   [board]
   (let [rows      (rows board)
         columns   (columns board)
-        diagonals (diagonals board)]
+        diagonals (diagonals board)
+        winner    (->> (concat rows columns diagonals)
+                       (map set)
+                       (take-while #(or (= #{"X"})(= #{"O"}))))]
     ;; TODO: check if set of all x or o but not blank
-    ;; Get winner!!!
+    ;; Get winner!!! 
     (prn "rows" rows)
     (prn "columns" columns)
     (prn "diags" diagonals)))
@@ -53,7 +56,8 @@
   [board]
   (let [winner (winner board)
         full?  (every? filled-space? board)]
-    (prn winner full?)))
+    {:winner winner
+     :full?  full?}))
 
 (defn print-board
   [v]
@@ -78,10 +82,13 @@
 (defn play
   [board players]
   ;; while no winner && board not full
-  (let [next-board (take-turn board (first players))]
-    (print-board next-board)
-    (game-status next-board)
-    #_(recur next-board (reverse players))))
+  (let [{:keys [winner full?]} (game-status board)
+        next-board (take-turn board (first players))]
+    (if (and (nil? winner)
+             (false? full?))
+      (print-board next-board)
+      (game-status next-board))
+    (recur next-board (reverse players))))
 
 (defn welcome
   [board]
