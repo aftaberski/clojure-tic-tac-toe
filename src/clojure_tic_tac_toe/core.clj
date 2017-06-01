@@ -46,7 +46,6 @@
         columns   (columns board)
         diagonals (diagonals board)
         winner    (get-winner (concat rows columns diagonals))]
-    (prn (concat rows columns diagonals))
     winner))
 
 (defn filled-space?
@@ -57,8 +56,6 @@
   [board]
   (let [winner (winner board)
         full?  (every? filled-space? board)]
-    (prn {:winner winner
-          :full?  full?})
     {:winner winner
      :full?  full?}))
 
@@ -94,7 +91,6 @@
 
 (defn play
   [board players]
-  (print-board board)
   (let [{:keys [winner full?]} (game-status board)]
 
     (cond winner
