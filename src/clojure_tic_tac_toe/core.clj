@@ -100,7 +100,6 @@
 
 (defn play
   [board players]
-  ;; while no winner && board not full
   (print-board board)
   (let [{:keys [winner full?]} (game-status board)]
 
