@@ -23,6 +23,8 @@
 
 ;; TODO: make multimethod?
 (defn diagonal
+  "Takes a vector of rows. Returns a vector of
+  the left-to-right diagonal tiles"
   [board]
   (mapv get board (range)))
 
@@ -68,6 +70,7 @@
   [board player]
   (print-board board)
   (let [next-move       (prompt ["Player " player ": Pick your next move!"])
+        ;; TODO: validate input - only 1 thru 9
         conformed-input (read-string next-move)]
     (assoc board conformed-input player)))
 
@@ -83,10 +86,12 @@
   [board]
   (println "*******************************************************")
   (println "              LET'S PLAY TIC TAC TOE!")
+  (println "*******************************************************")
+  (println "How to reference tiles:")
+  (print-board (range 0 9))
   (println "*******************************************************"))
 
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
   (let [board (vec (repeat 9 blank-space))]
     (welcome board)
