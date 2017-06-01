@@ -1,5 +1,6 @@
 (ns clojure-tic-tac-toe.core
-  (:gen-class))
+  (:require
+   [clojure.tools.namespace.repl :as repl]))
 
 ;; Welcome message
 ;; Prompt for user X to select space
@@ -34,19 +35,26 @@
         right-to-left (diagonal (map (comp vec reverse) (rows board)))]
     [left-to-right right-to-left]))
 
+(defn get-winner
+  [v]
+  (let [winner (->> v
+                    (map set)
+                    (filter #(or (= % #{"X"})
+                                 (= % #{"O"}))))]
+    (if (seq winner)
+      (ffirst winner)
+      nil)))
+
 (defn winner
   [board]
   (let [rows      (rows board)
         columns   (columns board)
         diagonals (diagonals board)
-        winner    (->> (concat rows columns diagonals)
-                       (map set)
-                       (take-while #(or (= #{"X"})(= #{"O"}))))]
+        winner    (get-winner (concat rows columns diagonals))]
+    (prn (concat rows columns diagonals))
     ;; TODO: check if set of all x or o but not blank
     ;; Get winner!!! 
-    (prn "rows" rows)
-    (prn "columns" columns)
-    (prn "diags" diagonals)))
+    winner))
 
 (defn filled-space?
   [x]
@@ -56,6 +64,8 @@
   [board]
   (let [winner (winner board)
         full?  (every? filled-space? board)]
+    (prn {:winner winner
+          :full?  full?})
     {:winner winner
      :full?  full?}))
 
@@ -82,13 +92,19 @@
 (defn play
   [board players]
   ;; while no winner && board not full
+  (print-board board)
   (let [{:keys [winner full?]} (game-status board)
-        next-board (take-turn board (first players))]
-    (if (and (nil? winner)
-             (false? full?))
-      (print-board next-board)
-      (game-status next-board))
-    (recur next-board (reverse players))))
+        _ (prn "winner in play" winner)]
+
+    (cond winner
+          (println (str winner " won the game!"))
+
+          full?
+          (println "Looks like its a tie!")
+
+          :else
+          (let [next-board (take-turn board (first players))]
+            (play next-board (reverse players))))))
 
 (defn welcome
   [board]
