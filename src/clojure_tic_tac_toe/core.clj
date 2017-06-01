@@ -2,12 +2,7 @@
   (:require
    [clojure.tools.namespace.repl :as repl]))
 
-;; Welcome message
-;; Prompt for user X to select space
-;; Place X on board
-;; Prompt for user O to select space
-;; Place O on board
-;; Continue while there is no winner || board is not full
+;; TODO: split out into different namespaces
 
 (def blank-space
   " ")
