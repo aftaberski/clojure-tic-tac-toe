@@ -3,7 +3,6 @@
    [clojure.tools.namespace.repl :as repl]))
 
 ;; TODO: split out into different namespaces
-
 (def blank-space
   " ")
 
