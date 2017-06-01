@@ -21,6 +21,7 @@
   [board]
   (apply mapv (comp vec list) (rows board)))
 
+;; TODO: make multimethod?
 (defn diagonal
   [board]
   (mapv get board (range)))
@@ -36,7 +37,8 @@
   (let [rows      (rows board)
         columns   (columns board)
         diagonals (diagonals board)]
-    ;; (every? (concat rows columns diagonals))
+    ;; TODO: check if set of all x or o but not blank
+    ;; Get winner!!!
     (prn "rows" rows)
     (prn "columns" columns)
     (prn "diags" diagonals)))
