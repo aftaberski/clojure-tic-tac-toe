@@ -1,36 +1,20 @@
-# clojure-tic-tac-toe
+```bash
+  _______         ______              ______         
+ /_  __(_)____   /_  __/___ ______   /_  __/___  ___ 
+  / / / / ___/    / / / __ `/ ___/    / / / __ \/ _ \
+ / / / / /__     / / / /_/ / /__     / / / /_/ /  __/
+/_/ /_/\___/    /_/  \__,_/\___/    /_/  \____/\___/ 
+                                                     
+```
 
-FIXME: description
-
-## Installation
-
-Download from http://example.com/FIXME.
+Tic Tac Toe written in Clojure
 
 ## Usage
 
-FIXME: explanation
+    $ lein run
 
-    $ java -jar clojure-tic-tac-toe-0.1.0-standalone.jar [args]
+### What's Next
 
-## Options
+* Add some AI!
 
-FIXME: listing of options this app accepts.
 
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2017 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
