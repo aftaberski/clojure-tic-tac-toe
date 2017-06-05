@@ -73,15 +73,16 @@
 (defn take-turn
   [board player]
   (print-board board)
-  (let [next-move       (prompt ["Player " player ": Pick your next move!"])
-        options         (map str (range 0 9))]
+  (let [next-move-fn (:next-move-fn player)
+        next-move    (next-move-fn board)
+        options      (map str (range 0 9))]
 
     (if (some #(= % next-move) options)
 
       (let [conformed-input (read-string next-move)]
         (if (= blank-space (get board conformed-input))
 
-          (assoc board conformed-input player)
+          (assoc board conformed-input (:marker player))
 
           (do (println "That space is already taken! Pick again")
               (take-turn board player))))
@@ -112,8 +113,35 @@
   (print-board (range 0 9))
   (println "*******************************************************"))
 
+(defn human-next-move
+  [_]
+  (prompt ["Player X: Pick your next move!"]))
+
+(defn free-spaces
+  [board]
+  ;; (= blank-space (get board conformed-input))
+  ;; [0 \" \"]
+  (->> board
+       (map-indexed vector)
+       (filter #(= blank-space (second %)))
+       (map (comp str first))))
+
+(defn computer-next-move
+  [board]
+  ;; evaluate what space are free
+  ;; randomly pick
+  (rand-nth (free-spaces board)))
+
+(def human
+  {:marker "X"
+   :next-move-fn human-next-move})
+
+(def computer
+  {:marker       "O"
+   :next-move-fn computer-next-move})
+
 (defn -main
   [& args]
   (let [board (vec (repeat 9 blank-space))]
     (welcome board)
-    (play board ["X" "O"])))
+    (play board [human computer])))
