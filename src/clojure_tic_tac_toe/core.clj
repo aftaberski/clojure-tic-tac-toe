@@ -73,8 +73,9 @@
 (defn take-turn
   [board player]
   (print-board board)
+  (println)
   (let [next-move-fn (:next-move-fn player)
-        next-move    (next-move-fn board)
+        next-move    (next-move-fn board player)
         options      (map str (range 0 9))]
 
     (if (some #(= % next-move) options)
@@ -114,34 +115,45 @@
   (println "*******************************************************"))
 
 (defn human-next-move
-  [_]
-  (prompt ["Player X: Pick your next move!"]))
+  [_ player]
+  (prompt ["Player " (:marker player) ": Pick your next move!"]))
 
 (defn free-spaces
   [board]
-  ;; (= blank-space (get board conformed-input))
-  ;; [0 \" \"]
   (->> board
        (map-indexed vector)
        (filter #(= blank-space (second %)))
        (map (comp str first))))
 
 (defn computer-next-move
-  [board]
-  ;; evaluate what space are free
-  ;; randomly pick
+  [board _]
   (rand-nth (free-spaces board)))
 
-(def human
+(def human-x
   {:marker "X"
+   :next-move-fn human-next-move})
+
+(def human-o
+  {:marker "O"
    :next-move-fn human-next-move})
 
 (def computer
   {:marker       "O"
    :next-move-fn computer-next-move})
 
+(def game-types
+  {"1" [human-x human-o]
+   "2" [human-x computer]})
+
+(def game-type-prompt
+  "Which type of game would you like to play?\n
+  1 - Human v Human\n
+  2 - Human v Computer")
+
 (defn -main
   [& args]
   (let [board (vec (repeat 9 blank-space))]
     (welcome board)
-    (play board [human computer])))
+    (let [game-type (prompt [game-type-prompt])
+          players   (get game-types game-type)]
+      (play board players))))
