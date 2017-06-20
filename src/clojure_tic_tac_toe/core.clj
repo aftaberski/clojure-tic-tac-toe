@@ -176,7 +176,7 @@
 
 (defn score
   [board player depth]
-  (let [winner (get-winner (partition 3 board))]
+  (let [winner (winner board)]
     (cond
 
       (= (:marker player) winner)
@@ -191,42 +191,43 @@
 ;; A great article on minimax for anyone who's interested
 ;; http://neverstopbuilding.com/minimax
 (defn minimax
-  [board current-player players depth]
-  (let [score (score board current-player depth)]
-    (if (game-over? board)
-      score
+  ([board current-player players]
+   (minimax board current-player players 0))
+  ([board current-player players depth]
+   (let [score (score board current-player depth)]
+     (if (game-over? board)
 
-      (let [depth (inc depth)]
+       score
 
-        (if (= (player-with-next-turn board players) current-player)
+       (let [depth (inc depth)]
 
-          ;; maxinum
-          (->> board
-               (possible-boards players)
-               (map #(minimax % current-player players depth))
-               (apply max))
+         (if (= (player-with-next-turn board players) current-player)
 
-          ;; minimum
-          (->> board
-               (possible-boards players)
-               (map #(minimax % current-player players depth))
-               (apply min)))))))
+           ;; maxinum
+           (->> board
+                (possible-boards players)
+                (map #(minimax % current-player players depth))
+                (apply max))
+
+           ;; minimum
+           (->> board
+                (possible-boards players)
+                (map #(minimax % current-player players depth))
+                (apply min))))))))
 
 (defn minimax-scores
   [board player players]
   (let [free-spaces    (map read-string (free-spaces board))
-        minimax-scores (map #(minimax % player players 0) (possible-boards players board))]
-    (map (fn [space score] {:space space :score score}) free-spaces minimax-scores)))
+        minimax-scores (map #(minimax % player players) (possible-boards players board))]
+    (map vector free-spaces minimax-scores)))
 
 (defn smart-computer-next-move
   [board player players]
-  (let [scores              (minimax-scores board player players)
-        _ (prn scores)
-        [best-score-move _] (->> scores
-                                 (sort-by second >)
-                                 first)
-        _ (prn best-score-move)]
-    (str (:space (apply max-key :score scores)))))
+  (let [scores    (minimax-scores board player players)
+        best-move (->> scores
+                       (sort-by second >)
+                       ffirst)]
+    (str best-move)))
 
 (def human-x
   {:marker "X"
