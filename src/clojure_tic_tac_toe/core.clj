@@ -70,12 +70,37 @@
   (println (apply str text))
   (read-line))
 
+(defn marker-with-next-turn
+  [board]
+  (let [board-frequencies (frequencies board)
+        x-count           (get board-frequencies "X")
+        o-count           (get board-frequencies "O")]
+
+    (cond
+      (nil? x-count)
+      "X"
+
+      (nil? o-count)
+      "O"
+
+      (> x-count o-count)
+      "O"
+
+      (= x-count o-count)
+      "X")))
+
+(defn player-with-next-turn
+  [board players]
+  (let [next-marker (marker-with-next-turn board)]
+    (first (filter (fn [player] (= next-marker (:marker player))) players))))
+
 (defn take-turn
-  [board player]
+  [board players]
   (print-board board)
   (println)
-  (let [next-move-fn (:next-move-fn player)
-        next-move    (next-move-fn board player)
+  (let [next-player (player-with-next-turn board players)
+        next-move-fn (:next-move-fn next-player)
+        next-move    (next-move-fn board next-player)
         options      (map str (range 0 9))]
 
     (if (some #(= % next-move) options)
@@ -83,13 +108,13 @@
       (let [conformed-input (read-string next-move)]
         (if (= blank-space (get board conformed-input))
 
-          (assoc board conformed-input (:marker player))
+          (assoc board conformed-input (:marker next-player))
 
           (do (println "That space is already taken! Pick again")
-              (take-turn board player))))
+              (take-turn board players))))
 
       (do (println "You must select a number between 0 - 8")
-          (take-turn board player)))))
+          (take-turn board players)))))
 
 (defn play
   [board players]
@@ -102,7 +127,7 @@
           (println "Looks like its a tie!")
 
           :else
-          (let [next-board (take-turn board (first players))]
+          (let [next-board (take-turn board players)]
             (play next-board (reverse players))))))
 
 (defn welcome
@@ -128,6 +153,13 @@
 (defn computer-next-move
   [board _]
   (rand-nth (free-spaces board)))
+
+
+
+(defn smart-computer-next-move
+  "Takes board as input and computes next move based on
+  minimax algorithm"
+  [])
 
 (def human-x
   {:marker "X"
