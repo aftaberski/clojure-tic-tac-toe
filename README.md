@@ -15,6 +15,7 @@ Tic Tac Toe written in Clojure
 
 ### What's Next
 
-* Add some AI!
+* ~Add some AI!~
+* Pull out fns into separate namespaces
 
 
